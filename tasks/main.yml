@@ -1,0 +1,20 @@
+- name: check if a icinga2 container is present
+  command: bash -c "docker ps | grep icinga2"
+  ignore_errors: True
+  register: result
+
+- name: start a icinga2 container
+  command: docker run -d
+              -h {{ ansible_hostname }}-mysql
+              --dns {{ docker_dns_2 }}
+              --dns {{ ansible_docker0.ipv4.address }}
+              --dns-search node.dc1.consul
+              -p 80:80
+              --link="mysql:mysql"
+              --restart=always
+              --name=icinga2 gitinsky/icinga2:0.0.1
+  register: docker_id
+  when: result|failed
+
+#- name: install mysql structure
+#  shell: docker exec icinga2 bash -c "mysql -u {{ icinga2.ido.user }} -h {{ icinga2.ido.dbserver }} -p{{ icinga2.ido.pass }} {{ icinga2.ido.dbname }} < /usr/share/icinga2-ido-mysql/schema/mysql.sql"
