@@ -1,23 +1,14 @@
-- name: check if a icinga2 container is present
-  command: bash -c "docker ps | grep icinga2"
-  ignore_errors: True
-  register: result
-
-- name: start a icinga2 container
-  command: docker run -d
-              -h {{ ansible_hostname }}-mysql
-              --dns {{ docker_dns_2 }}
-              --dns {{ ansible_docker0.ipv4.address }}
-              --dns-search node.dc1.consul
-              -p 80:80
-              --link="mysql:mysql"
-              --restart=always
-              --name=icinga2 gitinsky/icinga2:0.0.1
-  register: docker_id
-  when: result|failed
-
-- name: request token for web install
-  shell: docker exec  icinga2 cat /etc/icingaweb2/setup.token
-  register: token
-
-- debug: msg="Please go to {{ ansible_default_ipv4.address }}/icingaweb2 and continue setup with token {{ token.stdout }}"
+- name: start icinga2 container
+  docker:
+    name: icinga2
+    hostname: "{{ ansible_hostname }}-icinga2"
+    image: gitinsky/icinga2:0.0.1
+    state: started
+    links:
+    - "mysql:mysql"
+    ports:
+    - "80:80"
+    restart_policy: always
+    dns:
+    - "{{ docker_dns_2 }}"
+    - "{{ ansible_docker0.ipv4.address }}"
