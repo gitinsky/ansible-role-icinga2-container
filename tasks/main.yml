@@ -16,5 +16,8 @@
   register: docker_id
   when: result|failed
 
-#- name: install mysql structure
-#  shell: docker exec icinga2 bash -c "mysql -u {{ icinga2.ido.user }} -h {{ icinga2.ido.dbserver }} -p{{ icinga2.ido.pass }} {{ icinga2.ido.dbname }} < /usr/share/icinga2-ido-mysql/schema/mysql.sql"
+- name: request token for web install
+  shell: docker exec  icinga2 cat /etc/icingaweb2/setup.token
+  register: token
+
+- debug: msg="Please go to {{ ansible_default_ipv4.address }}/icingaweb2 and continue setup with token {{ token.stdout }}"
