@@ -16,7 +16,7 @@
     - "{{ ansible_docker0.ipv4.address }}"
 
 - name: copy configs
-  copy: src={{ item.src }} dest={{ icinga2.config_dir | mandatory }}
-  with_items: icinga2.dir_to_copy
+  copy: src={{ item.src }} dest={{ icinga2.config_dir | mandatory }}/{{ item.dest }}
+  with_items: icinga2.configs
   tags: configure
   notify: restart icinga2
