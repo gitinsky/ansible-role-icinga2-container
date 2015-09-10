@@ -9,6 +9,14 @@
     ports:
     - "80:80"
     restart_policy: always
+    volumes:
+    - "{{ icinga2.config_dir | mandatory }}:/etc/icinga2/conf.d/custom"
     dns:
     - "{{ docker_dns_2 }}"
     - "{{ ansible_docker0.ipv4.address }}"
+
+- name: copy configs
+  copy: src={{ item.src }} dest={{ icinga2.config_dir | mandatory }}
+  with_items: icinga2.dir_to_copy
+  tags: configure
+  notify: restart icinga2

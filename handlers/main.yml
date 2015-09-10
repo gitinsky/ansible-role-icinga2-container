@@ -1,0 +1,5 @@
+- name: restart icinga2
+  shell: docker exec -i icinga2 bash -c "source /etc/profile.d/rvm.sh && eye restart icinga2"
+  register: restart_icinga
+
+- debug: msg="{{ restart_icinga }}"
