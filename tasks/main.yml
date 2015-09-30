@@ -7,7 +7,7 @@
     links:
     - "mysql:mysql"
     ports:
-    - "80:80"
+    - "{{ icinga2.ext_http_port }}:80"
     restart_policy: always
     volumes:
     - "{{ icinga2.config_dir | mandatory }}:/etc/icinga2/conf.d/custom"
