@@ -4,8 +4,6 @@
     hostname: "{{ ansible_hostname }}-icinga2"
     image: gitinsky/icinga2:0.0.1
     state: started
-    links:
-    - "mysql:mysql"
     ports:
     - "{{ icinga2.ext_http_port }}:80"
     restart_policy: always
