@@ -29,6 +29,7 @@
     - "{{ icinga2.docker_vol_cache }}:/var/cache/icinga2"
     - "{{ icinga2.docker_vol_log }}:/var/log/icinga2"
     - "{{ icinga2.docker_vol_var_run_icinga2 }}:/var/run/icinga2"
+    - "{{ icinga2.docker_vol_var_lib_icinga2 }}:/var/lib/icinga2"
     dns:
     - "{{ docker_dns_2 }}"
     - "{{ ansible_docker0.ipv4.address }}"
