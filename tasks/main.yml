@@ -13,6 +13,11 @@
 - name: put container_environment.json
   copy: src=container_environment.json dest={{ icinga2.docker_vol_container_env }}/container_environment.json
 
+- name: put host configs
+  template: src=host.conf dest={{ icinga2.docker_vol_config }}/host-{{ hostvars[item].ansible_hostname }}.conf
+  with_items: groups['hosts-to-monitor']
+  notify: restart icinga2
+
 #- name: start icinga2 container
 #  docker:
 #    name: icinga2
@@ -42,6 +47,11 @@
 #    - "{{ docker_dns_2 }}"
 #    - "{{ ansible_docker0.ipv4.address }}"
 
+- name: check if container is started
+  shell: docker ps | grep "icinga2"
+  ignore_errors: True
+  register: result
+
 - name: start icinga2 container
   command: docker run
              -d
@@ -66,9 +76,10 @@
              -v {{ icinga2.docker_vol_php_sess }}:/var/lib/php5-sessions
              --read-only
              --name=icinga2 gitinsky/icinga2:0.0.1
+  when: result|failed
 
-- name: copy configs
-  copy: src={{ item.src }} dest={{ icinga2.config_dir | mandatory }}/{{ item.dest }}
-  with_items: icinga2.configs
-  tags: configure
-  notify: restart icinga2
+#- name: copy configs
+#  copy: src={{ item.src }} dest={{ icinga2.config_dir | mandatory }}/{{ item.dest }}
+#  with_items: icinga2.configs
+#  tags: configure
+#  notify: restart icinga2
