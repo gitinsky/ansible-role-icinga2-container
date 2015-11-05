@@ -17,6 +17,7 @@
   template: src=host.conf dest={{ icinga2.docker_vol_config }}/host-{{ hostvars[item].ansible_hostname }}.conf
   with_items: groups['hosts-to-monitor']
   notify: restart icinga2
+  tags: mon_conf
 
 - name: install python-passlib
   apt: name=python-passlib state=present
